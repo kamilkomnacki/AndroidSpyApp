@@ -1,33 +1,26 @@
 package com.komnacki.androidspyapp
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
-import com.google.android.gms.common.api.GoogleApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
 import com.komnacki.androidspyapp.api.PermissionsService.Companion.TAG
 import kotlinx.android.synthetic.main.activity_main.*
-import java.security.AuthProvider
-import java.security.Timestamp
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     private val MESSAGES_CHILD = "messages"
     companion object{
         lateinit var mFirebaseDatabaseReference : DatabaseReference
+        private lateinit var auth: FirebaseAuth
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +52,36 @@ class MainActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
+        btn_connect.setOnClickListener {
+            if(btn_connect.isEnabled) {
+                val email = et_email.text.toString()
+                val password = et_password.text.toString()
+                setButtonVisibility(false)
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            setButtonVisibility(true)
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("KK: ", "signInWithEmail:success")
+                            val user = auth.currentUser
+                        } else {
+                            setButtonVisibility(true)
+                            // If sign in fails, display a message to the user.
+                            Log.w("KK: ", "signInWithEmail:failure", task.exception)
+                            Toast.makeText(baseContext, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        }
+
+        auth = FirebaseAuth.getInstance()
+    }
+
+    private fun setButtonVisibility(isBtnVisible: Boolean) {
+        btn_connect.visibility = if(isBtnVisible) View.VISIBLE else View.GONE
+        progressBar.visibility = if(isBtnVisible) View.GONE else View.VISIBLE
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
@@ -67,7 +90,13 @@ class MainActivity : AppCompatActivity() {
         return rootView
     }
 
-//    override fun onCreateView(
+    override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        Log.d(TAG, "onStart: currentUser: " + currentUser.toString())
+    }
+
+    //    override fun onCreateView(
 //        parent: View?,
 //        name: String,
 //        context: Context,
