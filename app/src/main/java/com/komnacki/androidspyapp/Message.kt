@@ -1,4 +1,8 @@
 package com.komnacki.androidspyapp
 
-data class Message(
-    var baterryPercent : String = "")
+import android.content.Context
+
+interface Message {
+    fun getData(context: Context): Map<String, Any>
+
+}

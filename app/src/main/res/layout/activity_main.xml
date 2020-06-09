@@ -106,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_button"
-                android:enabled="false"
+                android:enabled="true"
                 android:fontFamily="sans-serif-medium"
                 android:text="Connect with your account"
                 android:textStyle="bold" />
