@@ -1,6 +1,5 @@
 package com.komnacki.androidspyapp.api
 
-import com.komnacki.androidspyapp.device.battery.EasyBatteryPOJO
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,8 +19,8 @@ interface PermissionsApi {
 //    @POST("/app/api/add/collection/{email}/permission/NETWORK")
 //    fun sendNetworkInfo(@Path("email") email : String, @Body networkInfo : EasyNetworkPOJO) : Observable<ApiResponse>
 //
-    @POST("/app/api/add/collection/{email}/permission/BATTERY_STATE")
-    fun sendBatteryState(@Path("email") email : String, @Body easyBatteryPOJO : EasyBatteryPOJO) : Observable<ApiResponse>
+//    @POST("/app/api/add/collection/{email}/permission/BATTERY_STATE")
+//    fun sendBatteryState(@Path("email") email : String, @Body easyBatteryPOJO : EasyBatteryPOJO) : Observable<ApiResponse>
 //
 //    @POST("/app/api/add/collection/{email}/permission/MEMORY")
 //    fun sendMemoryInfo(@Path("email") email : String, @Body memoryInfo : EasyMemoryPOJO) : Observable<ApiResponse>

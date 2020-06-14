@@ -1,14 +1,18 @@
-package com.komnacki.androidspyapp
+package com.komnacki.androidspyapp.device.battery
 
 import android.content.Context
+import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.BatteryHealth
 import github.nisrulz.easydeviceinfo.base.ChargingVia
 import github.nisrulz.easydeviceinfo.base.EasyBatteryMod
 
-
-class BatteryState(override var context: Context) : Message {
+//Todo: do wersji API 26:  https://github.com/nisrulz/easydeviceinfo/wiki/Usage#easybluetoothmod
+class BatteryState(override var context: Context) :
+    Message {
     init {
-        getBatteryState(context)
+        getBatteryState(
+            context
+        )
     }
 
     companion object {

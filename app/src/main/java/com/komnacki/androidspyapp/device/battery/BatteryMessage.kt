@@ -1,4 +1,4 @@
-package com.komnacki.androidspyapp
+package com.komnacki.androidspyapp.device.battery
 
 data class BatteryMessage(
     var percent: String,

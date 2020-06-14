@@ -2,7 +2,6 @@ package com.komnacki.androidspyapp.api
 
 import android.util.Log
 import com.google.gson.GsonBuilder
-import com.komnacki.androidspyapp.device.battery.EasyBatteryPOJO
 import io.reactivex.rxjava3.core.Observable
 //import com.komnacki.permissionraport.contacts.ContactsPOJO
 //import com.komnacki.permissionraport.easy_device_info.baterry.EasyBatteryPOJO
@@ -56,10 +55,10 @@ class PermissionsService {
 //        return api.sendConnectedEmails(email, easyIdsPOJO)
 //    }
 
-    fun sendBatteryState(email : String, easyBatteryPOJO : EasyBatteryPOJO) : Observable<ApiResponse> {
-        Log.d(TAG, "sendBatteryState: $easyBatteryPOJO")
-        return api.sendBatteryState(email, easyBatteryPOJO)
-    }
+//    fun sendBatteryState(email : String, easyBatteryPOJO : EasyBatteryPOJO) : Observable<ApiResponse> {
+//        Log.d(TAG, "sendBatteryState: $easyBatteryPOJO")
+//        return api.sendBatteryState(email, easyBatteryPOJO)
+//    }
 
 //    fun sendContacts(email : String, contactsPOJO : ContactsPOJO) : Observable<ApiResponse> {
 //        Log.d(TAG, "sendContacts: $contactsPOJO")
