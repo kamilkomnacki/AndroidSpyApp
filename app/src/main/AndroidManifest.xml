@@ -35,7 +35,6 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
                 <action android:name="android.intent.action.AIRPLANE_MODE"/>
                 <action android:name="android.intent.action.CONFIGURATION_CHANGED"/>
-                <action android:name="android.intent.action.*"/>
             </intent-filter>
         </receiver>
     </application>

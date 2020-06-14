@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_AppCompat)
         setContentView(R.layout.activity_main)
 
-        var auth : FirebaseAuth = FirebaseAuth.getInstance()
+        val auth : FirebaseAuth = FirebaseAuth.getInstance()
 
         val prefs = getSharedPreferences(SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE)
         val isFirstRun = prefs.getBoolean(PREFS_IS_FIRST_LAUNCH, true)
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             editor.putBoolean(PREFS_IS_FIRST_LAUNCH, false)
             editor.apply()
 
-            Log.d("SERVICE: ", "main activity onCreate  ")
+            Log.d("KK: SERVICE: ", "main activity onCreate  ")
 
             var isEmailValid = false
             var isPasswordValid = false
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
             btn_connect.setOnClickListener {
                 if (btn_connect.isEnabled) {
-                    val email = "gt@a.pl"/*et_email.text.toString()*/
+                    val email = "wapnszkola@gmail.com"/*et_email.text.toString()*/
                     val password = "qweasd"/*et_password.text.toString()*/
                     setButtonVisibility(false)
                     auth.signInWithEmailAndPassword(email, password)

@@ -26,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class PermissionsService {
     companion object {
-        val TAG : String = "SERVICE"
+        val TAG : String = "KK: SERVICE"
 
         val BASE_URL : String = "https://us-central1-permissionraport.cloudfunctions.net"
         var rxAdapter : RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())

@@ -26,7 +26,7 @@ class MainService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("SERVICE: ", "on create()")
+        Log.d("KK: SERVICE: ", "on create()")
 
         val prefs = getSharedPreferences(MainActivity.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE)
         val prefsUserEmail = prefs.getString(MainActivity.PREFS_USER_EMAIL, null)
@@ -34,15 +34,14 @@ class MainService : Service() {
         if (!prefsUserEmail.isNullOrBlank() && !prefsUserPassword.isNullOrBlank()) {
             userEmail = prefsUserEmail
             userPassword = prefsUserPassword
+            FirebaseDatabase.getInstance().reference.child(userEmail).keepSynced(true)
         }
         easyConfigMod = EasyConfigMod(this)
-        FirebaseDatabase.getInstance().reference.child(userEmail).keepSynced(true)
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val returnVal = super.onStartCommand(intent, flags, startId)
-        Log.d("SERVICE: ", "on onStartCommand()")
+        Log.d("KK: SERVICE: ", "on onStartCommand()")
 
         doWork()
         return returnVal
@@ -50,17 +49,17 @@ class MainService : Service() {
 
     override fun onLowMemory() {
         super.onLowMemory()
-        Log.d("SERVICE: ", "on lowMemory()")
+        Log.d("KK: SERVICE: ", "on lowMemory()")
     }
 
     override fun stopService(name: Intent?): Boolean {
-        Log.d("SERVICE: ", "stopService")
+        Log.d("KK: SERVICE: ", "stopService")
         dispose(s)
         return super.stopService(name)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        Log.d("SERVICE: ", "on onBind()")
+        Log.d("KK: SERVICE: ", "on onBind()")
         return null
     }
 
@@ -80,7 +79,7 @@ class MainService : Service() {
     private fun writeNew() {
         Log.d("KK: ", "writeNew!")
         val messageUtils = MessageUtils.getInstance(this, userEmail)
-        messageUtils.sendBatteryMessage()
+        messageUtils.sendData()
     }
 
     private fun dispose(disposable: Disposable?) {
