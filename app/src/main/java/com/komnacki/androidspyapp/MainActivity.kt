@@ -1,6 +1,9 @@
 package com.komnacki.androidspyapp
 
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
@@ -11,15 +14,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    private val MESSAGES_CHILD = "messages"
-
     companion object {
+        const val PREFS_SERVICE_NEXT_ALARM: String = "SHARED_PREFERENCE_LAST_ALARM_TIME"
         const val SHARED_PREFERENCE_TAG: String = "SHARED_PREFERENCE_NAME"
         const val PREFS_IS_FIRST_LAUNCH: String = "IS_FIRST_LAUNCH"
         const val PREFS_USER_EMAIL: String = "PREFS_USER_EMAIL"
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_AppCompat)
         setContentView(R.layout.activity_main)
 
-        val auth : FirebaseAuth = FirebaseAuth.getInstance()
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
         val prefs = getSharedPreferences(SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE)
         val isFirstRun = prefs.getBoolean(PREFS_IS_FIRST_LAUNCH, true)
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             editor.putBoolean(PREFS_IS_FIRST_LAUNCH, false)
             editor.apply()
 
-            Log.d("KK: SERVICE: ", "main activity onCreate  ")
+            Log.d("KK: MAIN: ", "main activity onCreate  ")
 
             var isEmailValid = false
             var isPasswordValid = false
@@ -143,8 +143,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        startService(Intent(this, MainService::class.java))
         super.onDestroy()
+//        startService(Intent(this, MainService::class.java))
+//        val restartService =
+//            Intent(applicationContext, ServiceReceiver::class.java)
+//        restartService.action = Intent.ACTION_DEFAULT
+//
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            applicationContext,
+//            1,
+//            restartService,
+//            PendingIntent.FLAG_ONE_SHOT
+//        )
+//        val alarmManager =
+//            getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//        alarmManager.set(
+//            AlarmManager.ELAPSED_REALTIME,
+//            SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent
+//        )
         Log.d("KK:", "onDestroy main activity!")
     }
 

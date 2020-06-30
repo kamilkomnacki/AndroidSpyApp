@@ -1,8 +1,8 @@
 package com.komnacki.androidspyapp.device.config
 
 import android.content.Context
+import android.util.Log
 import com.komnacki.androidspyapp.Message
-import github.nisrulz.easydeviceinfo.base.EasyBluetoothMod
 import github.nisrulz.easydeviceinfo.base.EasyConfigMod
 import github.nisrulz.easydeviceinfo.base.RingerMode
 
@@ -10,6 +10,7 @@ import github.nisrulz.easydeviceinfo.base.RingerMode
 class ConfigState(override var context: Context) :
     Message {
     init {
+        Log.d("KK: ", "ConfigState")
         getConfigState(
             context
         )

@@ -1,6 +1,7 @@
 package com.komnacki.androidspyapp.device.device
 
 import android.content.Context
+import android.util.Log
 import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.EasyDeviceMod
 import java.text.SimpleDateFormat
@@ -9,6 +10,7 @@ import java.text.SimpleDateFormat
 class DeviceState(override var context: Context) :
     Message {
     init {
+        Log.d("KK: ", "DeviceState")
         getDeviceState(
             context
         )

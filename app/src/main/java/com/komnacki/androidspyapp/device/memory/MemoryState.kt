@@ -1,15 +1,15 @@
 package com.komnacki.androidspyapp.device.memory
 
 import android.content.Context
+import android.util.Log
 import com.komnacki.androidspyapp.Message
-import github.nisrulz.easydeviceinfo.base.EasyConfigMod
 import github.nisrulz.easydeviceinfo.base.EasyMemoryMod
-import github.nisrulz.easydeviceinfo.base.RingerMode
 
 
 class MemoryState(override var context: Context) :
     Message {
     init {
+        Log.d("KK: ", "MemoryState")
         getMemoryState(
             context
         )

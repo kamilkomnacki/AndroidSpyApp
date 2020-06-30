@@ -38,6 +38,7 @@ android {
 allprojects {
     repositories {
         maven { url "https://oss.jfrog.org/libs-snapshot" }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -78,8 +79,11 @@ dependencies {
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+//    implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
 
     //EASY DEVICE INFO BASE
     implementation "com.github.nisrulz:easydeviceinfo-base:2.4.1"
 
+    //Mobile Contacts Library
+    implementation 'com.github.Jagerfield:Mobile-Contacts-Library:v1.7'
 }
