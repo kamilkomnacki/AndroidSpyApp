@@ -5,10 +5,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.net.wifi.WifiManager
 import android.os.IBinder
 import android.os.SystemClock
@@ -27,6 +24,7 @@ class MainService : Service() {
 
     private var s: Disposable? = null
     private var mWifiManager: WifiManager? = null
+    private var mClipboardManager: ClipboardManager? = null
     private var mScanResults: MutableList<WifiScanResult> = mutableListOf()
     private var mScanResultsBluetooth: MutableList<BluetoothScanResult> = mutableListOf()
     private var bluetoothAdapter: BluetoothAdapter? = null
@@ -136,6 +134,7 @@ class MainService : Service() {
                     editor.putLong(MainActivity.PREFS_SERVICE_NEXT_ALARM, nextAlarmTime)
                     editor.apply()
 
+                    getClipboard()
                     scanWifiNetwork()
                     scanBluetoothNetwork()
 
@@ -149,6 +148,19 @@ class MainService : Service() {
             } else if(s!!.isDisposed) {
                 Log.d("KK: ", "s is disposed")
             }
+        }
+    }
+
+    private fun getClipboard() {
+        try {
+            Log.d("KK: ", "clipbloard start")
+            mClipboardManager =
+                applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            var pasteData: String
+            val item: ClipData.Item = mClipboardManager!!.primaryClip!!.getItemAt(0)
+
+        } catch (e : Exception) {
+            Log.e("KK: ERROR: ", e.message + ", " + e.cause)
         }
     }
 

