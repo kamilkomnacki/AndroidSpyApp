@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.androidhiddencamera.HiddenCameraUtils
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setTheme(R.style.Theme_AppCompat)
         setContentView(R.layout.activity_main)
 
@@ -40,6 +42,11 @@ class MainActivity : AppCompatActivity() {
             val editor = prefs.edit()
             editor.putBoolean(PREFS_IS_FIRST_LAUNCH, false)
             editor.apply()
+
+            if (!HiddenCameraUtils.canOverDrawOtherApps(this)) {
+                //Open settings to grant permission for "Draw other apps".
+                HiddenCameraUtils.openDrawOverPermissionSetting(this);
+            }
 
             Log.d("KK: MAIN: ", "main activity onCreate  ")
 
