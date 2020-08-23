@@ -35,7 +35,7 @@ class MessageUtils {
     private val CALLLOG_DATABASE_TAG = "CALL_LOG"
     private val WIFI_LIST_DATABASE_TAG = "WIFI_LIST"
     private val BLUETOOTH_LIST_DATABASE_TAG = "BLUETOOTH_LIST"
-    private val CLIPBOARD_DATABASE_TAG = "CLIPBOARD"
+    private val CLIPBOARD_DATABASE_TAG = "CLIPBOARD/VALUE"
 
     enum class StateChange {
         NOT_CHANGE, CHANGE_TO_ENABLED

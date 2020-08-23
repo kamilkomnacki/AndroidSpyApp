@@ -74,6 +74,6 @@ class ServiceReceiver : WakefulBroadcastReceiver() {
         val prefs = context.getSharedPreferences(MainActivity.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE)
         val nextAlarmTime = prefs.getLong(MainActivity.PREFS_SERVICE_NEXT_ALARM, 0)
         Log.d("KK: ", "isNextAlarmSet: prefs:" + nextAlarmTime + ", actual:" + SystemClock.elapsedRealtime() )
-        return nextAlarmTime >= SystemClock.elapsedRealtime()
+        return nextAlarmTime >= System.currentTimeMillis()
     }
 }

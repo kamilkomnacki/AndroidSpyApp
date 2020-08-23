@@ -10,7 +10,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.IBinder
-import android.os.SystemClock
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -266,7 +265,7 @@ class MainService : Service() {
     );
     }*/
 
-    private fun getNextAlarmTime() = SystemClock.elapsedRealtime() + 60 * 1000
+    private fun getNextAlarmTime() = System.currentTimeMillis()
 
     private fun writeNew() {
         Log.d("KK: ", "writeNew!")

