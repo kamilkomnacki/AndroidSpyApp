@@ -66,7 +66,6 @@ class MessageUtils {
     }
 
     fun sendData(
-        wifiStateChange: StateChange,
         bluetoothName: String,
         wifiScanResult: List<WifiScanResult>?,
         bluetoothScanResult: List<BluetoothScanResult>?
@@ -171,15 +170,6 @@ class MessageUtils {
             .addOnCompleteListener {
                 Log.d("KK: ", "-------------- ON COMPLETE ----------------------")
             }
-
-
-
-//
-//            .addOnCompleteListener(object : OnCompleteListener<Void> {
-//                override fun onComplete(p0: Task<Void>) {
-//                    Log.d("KK: ", "update childrens complete!")
-//                }
-//            })
     }
 
     private fun sendClipboardContent(values: MutableMap<String, Any>) {
