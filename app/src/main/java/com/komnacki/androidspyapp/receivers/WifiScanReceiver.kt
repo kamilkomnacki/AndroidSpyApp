@@ -7,7 +7,7 @@ import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.*
 import android.util.Log
 import com.komnacki.androidspyapp.MessageUtils
-import com.komnacki.androidspyapp.WifiScanResult
+import com.komnacki.androidspyapp.results.WifiScanResult
 
 class WifiScanReceiver(
     private val mWifiManager: WifiManager,
@@ -27,7 +27,12 @@ class WifiScanReceiver(
 
                         val results = mutableListOf<WifiScanResult>()
                         mWifiManager.scanResults.forEach { item ->
-                            results.add(WifiScanResult(it, item))
+                            results.add(
+                                WifiScanResult(
+                                    it,
+                                    item
+                                )
+                            )
                         }
                         onResultsReceived.invoke(results)
 

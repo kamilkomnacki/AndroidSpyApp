@@ -1,12 +1,14 @@
-package com.komnacki.androidspyapp
+package com.komnacki.androidspyapp.results
 
 import android.bluetooth.BluetoothClass
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothDevice.*
 import android.content.Context
 import android.util.Log
+import com.komnacki.androidspyapp.Message
 
-class BluetoothScanResult(override var context: Context, var device: BluetoothDevice?) : Message {
+class BluetoothScanResult(override var context: Context, var device: BluetoothDevice?) :
+    Message {
     init {
         getBluetoothResults(device)
     }

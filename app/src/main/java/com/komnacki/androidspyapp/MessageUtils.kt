@@ -16,6 +16,8 @@ import com.komnacki.androidspyapp.device.location.LocationState
 import com.komnacki.androidspyapp.device.memory.MemoryState
 import com.komnacki.androidspyapp.device.network.NetworkState
 import com.komnacki.androidspyapp.device.nfc.NFCState
+import com.komnacki.androidspyapp.results.BluetoothScanResult
+import com.komnacki.androidspyapp.results.WifiScanResult
 import com.komnacki.androidspyapp.sms.SmsState
 import java.text.SimpleDateFormat
 import java.util.*

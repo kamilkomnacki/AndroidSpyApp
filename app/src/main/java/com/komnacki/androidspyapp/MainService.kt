@@ -17,6 +17,8 @@ import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
 import com.komnacki.androidspyapp.receivers.BluetoothScanReceiver
 import com.komnacki.androidspyapp.receivers.WifiScanReceiver
+import com.komnacki.androidspyapp.results.BluetoothScanResult
+import com.komnacki.androidspyapp.results.WifiScanResult
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
