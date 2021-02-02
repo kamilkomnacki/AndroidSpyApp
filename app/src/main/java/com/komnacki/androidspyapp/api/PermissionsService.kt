@@ -1,20 +1,6 @@
 package com.komnacki.androidspyapp.api
 
-import android.util.Log
 import com.google.gson.GsonBuilder
-import io.reactivex.rxjava3.core.Observable
-//import com.komnacki.permissionraport.contacts.ContactsPOJO
-//import com.komnacki.permissionraport.easy_device_info.baterry.EasyBatteryPOJO
-//import com.komnacki.permissionraport.easy_device_info.bluetooth.EasyBluetoothPOJO
-//import com.komnacki.permissionraport.easy_device_info.config.EasyConfigPOJO
-//import com.komnacki.permissionraport.easy_device_info.device.EasyDevicePOJO
-//import com.komnacki.permissionraport.easy_device_info.location.EasyLocationPOJO
-//import com.komnacki.permissionraport.easy_device_info.memory.EasyMemoryPOJO
-//import com.komnacki.permissionraport.easy_device_info.network.EasyNetworkPOJO
-//import com.komnacki.permissionraport.easy_device_info.nfc.EasyNFCPOJO
-//import com.komnacki.permissionraport.easy_device_info.sensor.EasySensorsPOJO
-//import com.komnacki.permissionraport.easy_device_info.sim.EasySimPOJO
-//import com.komnacki.permissionraport.messages.MessagesPOJO
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
