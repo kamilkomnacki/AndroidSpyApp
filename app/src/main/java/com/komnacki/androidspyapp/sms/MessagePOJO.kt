@@ -3,6 +3,7 @@ package com.komnacki.androidspyapp.sms
 import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 
+//TODO: Handle all message data
 class MessagePOJO(
     id: Long,
     threadId: Long,

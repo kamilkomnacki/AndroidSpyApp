@@ -1,7 +1,6 @@
 package com.komnacki.androidspyapp.device.battery
 
 import android.content.Context
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.BatteryHealth
 import github.nisrulz.easydeviceinfo.base.ChargingVia
@@ -11,7 +10,6 @@ import github.nisrulz.easydeviceinfo.base.EasyBatteryMod
 class BatteryState(override var context: Context) :
     Message {
     init {
-        Log.d("KK: ", "BatteryState")
         getBatteryState(
             context
         )

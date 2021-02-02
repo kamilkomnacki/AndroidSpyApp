@@ -1,7 +1,6 @@
 package com.komnacki.androidspyapp.device.network
 
 import android.content.Context
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.EasyNetworkMod
 import github.nisrulz.easydeviceinfo.base.NetworkType
@@ -10,7 +9,6 @@ import github.nisrulz.easydeviceinfo.base.NetworkType
 class NetworkState(override var context: Context) :
     Message {
     init {
-        Log.d("KK: ", "NetworkState")
         getNetworkState(
             context
         )

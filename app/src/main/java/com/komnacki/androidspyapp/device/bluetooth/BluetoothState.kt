@@ -1,7 +1,6 @@
 package com.komnacki.androidspyapp.device.bluetooth
 
 import android.content.Context
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.EasyBluetoothMod
 
@@ -9,7 +8,6 @@ import github.nisrulz.easydeviceinfo.base.EasyBluetoothMod
 class BluetoothState(override var context: Context, var bluetoothName : String) :
     Message {
     init {
-        Log.d("KK: ", "BluetoothState")
         getBluetoothState(
             context,
             bluetoothName

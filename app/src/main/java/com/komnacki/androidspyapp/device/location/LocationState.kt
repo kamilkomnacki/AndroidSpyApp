@@ -1,7 +1,6 @@
 package com.komnacki.androidspyapp.device.location
 
 import android.content.Context
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.EasyLocationMod
 
@@ -9,7 +8,6 @@ import github.nisrulz.easydeviceinfo.base.EasyLocationMod
 class LocationState(override var context: Context) :
     Message {
     init {
-        Log.d("KK: ", "LocationState")
         getLocationState(
             context
         )

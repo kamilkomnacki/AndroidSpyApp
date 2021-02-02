@@ -1,14 +1,12 @@
 package com.komnacki.androidspyapp.device.nfc
 
 import android.content.Context
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 import github.nisrulz.easydeviceinfo.base.EasyNfcMod
 
 class NFCState(override var context: Context) :
     Message {
     init {
-        Log.d("KK: ", "NFCState")
         getNFCkState(
             context
         )

