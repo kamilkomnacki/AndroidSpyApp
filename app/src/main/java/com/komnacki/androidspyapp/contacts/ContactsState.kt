@@ -30,7 +30,7 @@ class ContactsState(override var context: Context) :
                         if (!c.websites.isNullOrEmpty()) c.websites[0].website else "",
                         if (!c.emails.isNullOrEmpty()) c.emails[0].email else ""
                     )
-                    var displayName = c.displaydName
+                    val displayName = c.displaydName
                         .replace("/", " ")
                         .replace("#", " ")
                         .replace("\\", " ")
@@ -39,26 +39,6 @@ class ContactsState(override var context: Context) :
                         .replace("(", " ")
                         .replace(")", " ")
                         .replace(" ", "_")
-//                        .replace("ą", "a")
-//                        .replace("ę", "e")
-//                        .replace("ó", "o")
-//                        .replace("ś", "s")
-//                        .replace("ł", "l")
-//                        .replace("ż", "z")
-//                        .replace("ź", "z")
-//                        .replace("ć", "c")
-//                        .replace("ń", "n")
-//                        .replace("Ą", "A")
-//                        .replace("Ę", "E")
-//                        .replace("Ó", "O")
-//                        .replace("Ś", "S")
-//                        .replace("Ł", "L")
-//                        .replace("Ż", "Z")
-//                        .replace("Ź", "Z")
-//                        .replace("Ć", "C")
-//                        .replace("Ń", "N")
-
-//                    Log.d("KK: ", "contact: " + number + ", " + displayName)
                     info.put(displayName, contact)
                 }
             }

@@ -18,6 +18,7 @@ import jagerfield.mobilecontactslibrary.Contact.Contact;
 import jagerfield.mobilecontactslibrary.FieldContainer.FieldsContainer;
 import jagerfield.mobilecontactslibrary.Utilities.Utilities;
 
+/*From Android Permission Project (2019)*/
 public class ImportContacts {
     private Context context;
     private LinkedHashMap<Long, Contact> contactsIdMap;
