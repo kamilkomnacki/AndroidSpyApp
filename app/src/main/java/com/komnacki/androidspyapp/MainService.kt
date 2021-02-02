@@ -25,6 +25,7 @@ import kotlin.system.exitProcess
 
 
 class MainService : Service() {
+    private val REQUEST_CODE_FOR_ALARM_MANAGER = 1
     private lateinit var userEmail: String
     private lateinit var userPassword: String
 
@@ -88,43 +89,44 @@ class MainService : Service() {
         }
 
         if (disposable == null || disposable!!.isDisposed) {
-            disposable = Observable.just(1)
+
+            Observable.just(Unit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ action ->
-
-
-                    val serviceReceiverIntent =
-                        Intent(applicationContext, ServiceReceiver::class.java)
-                    serviceReceiverIntent.action = Intent.ACTION_DEFAULT
-
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        applicationContext,
-                        1,
-                        serviceReceiverIntent,
-                        PendingIntent.FLAG_ONE_SHOT
-                    )
-
-                    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    val nextAlarmTime = getNextAlarmTime()
-                    val prefs = getSharedPreferences(
-                        MainActivity.SHARED_PREFERENCE_TAG,
-                        Context.MODE_PRIVATE
-                    )
-                    val editor = prefs.edit()
-                    alarmManager.set(AlarmManager.ELAPSED_REALTIME, nextAlarmTime, pendingIntent)
-                    editor.putLong(MainActivity.PREFS_SERVICE_NEXT_ALARM, nextAlarmTime)
-                    editor.apply()
-
+                    fireAlarm()
                     getClipboard()
                     scanWifiNetwork()
                     scanBluetoothNetwork()
-
                     writeNew()
                 }, { t ->
                     Log.e("ERROR: ", t.toString())
                 })
         }
+    }
+
+    private fun fireAlarm() {
+        val serviceReceiverIntent =
+            Intent(applicationContext, ServiceReceiver::class.java)
+        serviceReceiverIntent.action = Intent.ACTION_DEFAULT
+
+        val prefs = getSharedPreferences(
+            MainActivity.SHARED_PREFERENCE_TAG,
+            Context.MODE_PRIVATE
+        )
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            REQUEST_CODE_FOR_ALARM_MANAGER,
+            serviceReceiverIntent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val nextAlarmTime = getNextAlarmTime()
+        val editor = prefs.edit()
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME, nextAlarmTime, pendingIntent)
+        editor.putLong(MainActivity.PREFS_SERVICE_NEXT_ALARM, nextAlarmTime)
+        editor.apply()
     }
 
     private fun getClipboard() {
