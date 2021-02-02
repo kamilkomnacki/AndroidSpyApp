@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">AndroidSpyApp</string>
+    <string name="dialog_title_attention">Attention!</string>
+    <string name="dialog_description">The visual interface of app will be close now, and not visible in the future. The AndroidSpyApp will start collecting data about user device and sending data to the server.</string>
+    <string name="dialog_accept">OK</string>
+    <string name="autentication_failed_toast_message">Authentication failed.</string>
 </resources>

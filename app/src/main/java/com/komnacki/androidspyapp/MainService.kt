@@ -27,7 +27,9 @@ import kotlin.system.exitProcess
 
 
 class MainService : Service() {
-    private val REQUEST_CODE_FOR_ALARM_MANAGER = 1
+    companion object {
+        const val REQUEST_CODE_FOR_ALARM_MANAGER = 1
+    }
     private lateinit var userEmail: String
     private lateinit var userPassword: String
 

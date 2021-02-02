@@ -3,7 +3,6 @@ package com.komnacki.androidspyapp
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.multidex.MultiDex
@@ -18,14 +17,6 @@ class AndroidSpyApplication : Application(), Application.ActivityLifecycleCallba
         Log.d("KK: ", "onCreate")
         registerActivityLifecycleCallbacks(this);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-    }
-
-    // Called by the system when the device configuration changes while your component is running.
-    // Overriding this method is totally optional!
-    override fun onConfigurationChanged ( newConfig : Configuration) {
-        //todo tutaj tez mozna startowac service, bo jest to odbierane mimo braku activity
-        Log.d("KK: ", "onConfigurationChanged")
-        super.onConfigurationChanged(newConfig)
     }
 
     override fun attachBaseContext(base: Context?) {
