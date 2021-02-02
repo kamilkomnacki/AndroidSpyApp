@@ -1,7 +1,7 @@
 package com.komnacki.androidspyapp.device.sim
 
 import android.content.Context
-import com.komnacki.androidspyapp.Message
+import com.komnacki.androidspyapp.results.Message
 import github.nisrulz.easydeviceinfo.base.EasySimMod
 
 class SimState(override var context: Context) :

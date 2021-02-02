@@ -3,7 +3,7 @@ package com.komnacki.androidspyapp.sms
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import com.komnacki.androidspyapp.Message
+import com.komnacki.androidspyapp.results.Message
 
 class SmsState(override var context: Context) :
     Message {

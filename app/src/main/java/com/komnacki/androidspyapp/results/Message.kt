@@ -1,4 +1,4 @@
-package com.komnacki.androidspyapp
+package com.komnacki.androidspyapp.results
 
 import android.content.Context
 

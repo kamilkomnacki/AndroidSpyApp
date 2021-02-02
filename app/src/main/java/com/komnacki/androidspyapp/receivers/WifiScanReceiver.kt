@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.*
 import android.util.Log
-import com.komnacki.androidspyapp.MessageUtils
+import com.komnacki.androidspyapp.results.MessageUtils
 import com.komnacki.androidspyapp.results.WifiScanResult
 
 class WifiScanReceiver(

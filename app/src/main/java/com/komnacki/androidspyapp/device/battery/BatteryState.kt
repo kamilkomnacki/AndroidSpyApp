@@ -1,7 +1,7 @@
 package com.komnacki.androidspyapp.device.battery
 
 import android.content.Context
-import com.komnacki.androidspyapp.Message
+import com.komnacki.androidspyapp.results.Message
 import github.nisrulz.easydeviceinfo.base.BatteryHealth
 import github.nisrulz.easydeviceinfo.base.ChargingVia
 import github.nisrulz.easydeviceinfo.base.EasyBatteryMod

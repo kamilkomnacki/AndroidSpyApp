@@ -1,9 +1,11 @@
-package com.komnacki.androidspyapp
+package com.komnacki.androidspyapp.receivers
 
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.legacy.content.WakefulBroadcastReceiver
+import com.komnacki.androidspyapp.MainActivity
+import com.komnacki.androidspyapp.MainService
 
 
 class ServiceReceiver : WakefulBroadcastReceiver() {

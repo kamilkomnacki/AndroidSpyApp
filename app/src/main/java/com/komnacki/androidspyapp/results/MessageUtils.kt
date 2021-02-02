@@ -1,4 +1,4 @@
-package com.komnacki.androidspyapp
+package com.komnacki.androidspyapp.results
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -16,8 +16,6 @@ import com.komnacki.androidspyapp.device.location.LocationState
 import com.komnacki.androidspyapp.device.memory.MemoryState
 import com.komnacki.androidspyapp.device.network.NetworkState
 import com.komnacki.androidspyapp.device.nfc.NFCState
-import com.komnacki.androidspyapp.results.BluetoothScanResult
-import com.komnacki.androidspyapp.results.WifiScanResult
 import com.komnacki.androidspyapp.sms.SmsState
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,13 +50,13 @@ class MessageUtils {
         lateinit var userEmail: String
         lateinit var context: Context
         fun getInstance(context: Context, userEmail: String): MessageUtils {
-            this.context = context
-            this.userEmail = userEmail
+            Companion.context = context
+            Companion.userEmail = userEmail
             return MessageUtils()
         }
     }
 
-    fun getBaseHeader(): DatabaseReference {
+    private fun getBaseHeader(): DatabaseReference {
         val currDate = SimpleDateFormat(dateFormat, Locale.getDefault()).format(Date())
         val currTime = SimpleDateFormat(timeFormat, Locale.getDefault()).format(Date())
 

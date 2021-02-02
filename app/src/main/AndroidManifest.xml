@@ -55,7 +55,7 @@
         <!-- https://chromium.googlesource.com/android_tools/+/refs/heads/master/sdk/platforms/android-28/data/broadcast_actions.txt -->
         <!-- am broadcast -a android.intent.action.BOOT_COMPLETED -->
         <!-- Start the Service if applicable on boot -->
-        <receiver android:name="com.komnacki.androidspyapp.ServiceReceiver"
+        <receiver android:name="com.komnacki.androidspyapp.receivers.ServiceReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

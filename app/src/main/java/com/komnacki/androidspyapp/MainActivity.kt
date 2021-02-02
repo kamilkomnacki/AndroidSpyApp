@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.androidhiddencamera.HiddenCameraUtils
 import com.google.firebase.auth.FirebaseAuth
+import com.komnacki.androidspyapp.receivers.ServiceReceiver
 import kotlinx.android.synthetic.main.activity_main.*
 
 

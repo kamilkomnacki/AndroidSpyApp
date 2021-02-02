@@ -2,7 +2,7 @@ package com.komnacki.androidspyapp.contacts
 
 import android.content.Context
 import android.util.Log
-import com.komnacki.androidspyapp.Message
+import com.komnacki.androidspyapp.results.Message
 
 
 class ContactsState(override var context: Context) :

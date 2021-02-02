@@ -3,7 +3,6 @@ package com.komnacki.androidspyapp.results
 import android.content.Context
 import android.net.wifi.ScanResult
 import android.util.Log
-import com.komnacki.androidspyapp.Message
 
 class WifiScanResult(override var context: Context, scanResult: ScanResult?) :
     Message {

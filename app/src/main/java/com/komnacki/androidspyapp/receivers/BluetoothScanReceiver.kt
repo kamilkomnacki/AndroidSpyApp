@@ -6,8 +6,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.komnacki.androidspyapp.MessageUtils
 import com.komnacki.androidspyapp.results.BluetoothScanResult
+import com.komnacki.androidspyapp.results.MessageUtils
 
 class BluetoothScanReceiver(private val onResultsReceived: (items: List<BluetoothScanResult>) -> Unit) : BroadcastReceiver() {
     var state: MessageUtils.StateChange = MessageUtils.StateChange.CHANGED
