@@ -145,7 +145,7 @@ class MainService : Service() {
 
         bluetoothAdapter.let {adapter ->
             if (!adapter.isEnabled) {
-                mBluetoothScanReceiver.state = MessageUtils.StateChange.CHANGE_TO_ENABLED
+                mBluetoothScanReceiver.state = MessageUtils.StateChange.NOT_CHANGED
                 adapter.enable()
             }
             if (adapter.isEnabled) {
@@ -160,7 +160,7 @@ class MainService : Service() {
 
         if (!mWifiManager.isWifiEnabled) {
             mWifiScanReceiver = WifiScanReceiver(mWifiManager) { items -> wifiScanResults.addAll(items) }
-            mWifiScanReceiver.state = MessageUtils.StateChange.CHANGE_TO_ENABLED
+            mWifiScanReceiver.state = MessageUtils.StateChange.NOT_CHANGED
             mWifiManager.isWifiEnabled = true
         }
 

@@ -10,7 +10,7 @@ import com.komnacki.androidspyapp.BluetoothScanResult
 import com.komnacki.androidspyapp.MessageUtils
 
     class BluetoothScanReceiver(private val onResultsReceived: (items: List<BluetoothScanResult>) -> Unit) : BroadcastReceiver() {
-    var state: MessageUtils.StateChange = MessageUtils.StateChange.NOT_CHANGE
+    var state: MessageUtils.StateChange = MessageUtils.StateChange.CHANGED
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i("KK: ", "Bluetooth scan on receive")
@@ -21,7 +21,7 @@ import com.komnacki.androidspyapp.MessageUtils
                 context?.let {context ->
                     onResultsReceived.invoke(listOf(BluetoothScanResult(context, device)))
                     context.unregisterReceiver(this)
-                    if (state == MessageUtils.StateChange.CHANGE_TO_ENABLED) {
+                    if (state == MessageUtils.StateChange.NOT_CHANGED) {
                         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
                         bluetoothAdapter.disable()
                     }

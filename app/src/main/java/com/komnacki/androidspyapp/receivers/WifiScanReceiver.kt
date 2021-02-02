@@ -14,7 +14,7 @@ class WifiScanReceiver(
     private val onResultsReceived: (items: List<WifiScanResult>) -> Unit
 ) : BroadcastReceiver() {
 
-    var state: MessageUtils.StateChange = MessageUtils.StateChange.NOT_CHANGE
+    var state: MessageUtils.StateChange = MessageUtils.StateChange.CHANGED
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i("KK: ", "Wifi scan on receive")
@@ -31,7 +31,7 @@ class WifiScanReceiver(
                         }
                         onResultsReceived.invoke(results)
 
-                        if (state == MessageUtils.StateChange.CHANGE_TO_ENABLED) {
+                        if (state == MessageUtils.StateChange.NOT_CHANGED) {
                             mWifiManager.isWifiEnabled = false
                         }
                     }
